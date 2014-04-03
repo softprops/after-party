@@ -15,7 +15,7 @@ create a server. start a party
 import afterparty._
 Server(port).start(AfterParty.empty.onPush { push =>
   println(
-    s"${push.pusher.name} pushed ${commits.size} commits to ${push.ref}")
+    s"${push.pusher.name} pushed ${push.commits.size} commits to ${push.ref}")
 })
 ```
 
