@@ -5,9 +5,17 @@ import unfiltered.request.Path
 
 object Server {
   def main(args: Array[String]) {
-    Server(4567).start(AfterParty.empty.onPush {
-      push => println(s"got pushed $push")
-    })
+    Server(4567).start(
+      AfterParty.empty
+        .onPing { ping =>
+          println(s"got ping ${ping.zen}")
+        }
+        .onPush { push =>
+          println(s"got pushed $push")
+        }
+        .onPullRequest { pr =>
+          println(s"got a pull ${pr.action} request from user ${pr.pull_request.user.name} entitled '${pr.pull_request.title}'\n${pr.pull_request.body}")
+        })
   }
 }
 

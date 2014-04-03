@@ -1,6 +1,6 @@
 package afterparty
 
-case class User(name: String, email: String, username: Option[String])
+case class User(name: String, email: Option[String], username: Option[String])
 
 case class Commit(
   id: String,
@@ -32,7 +32,6 @@ case class Repo(
   name: String,
   url: String,
   description: String,
-  homepage: String,
   watchers: Int,
   stargazers: Int,
   forks: Int,

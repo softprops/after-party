@@ -1,12 +1,13 @@
 package afterparty
 
 import unfiltered.netty
-import unfiltered.request.{ Params, StringHeader, & }
+import unfiltered.request.{ Params, Path, StringHeader, & }
 import unfiltered.response.Ok
 import org.jboss.netty.channel.ChannelHandlerContext
 import org.json4s.native.JsonMethods.parse
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.control.NonFatal
 
 object XGithubEvent extends StringHeader("X-Github-Event")
 object Payload extends Params.Extract("payload", Params.first)
@@ -57,7 +58,9 @@ case class AfterParty private[afterparty](
         ev <- Event.of(event, parse(payload))
       } handlers.filter(_.isDefinedAt(ev)) match {
         case Nil   => Future(AfterParty.Unhandled(ev))
-        case hands => hands.foreach { hand => Future(hand(ev)) }
+        case hands => hands.foreach { hand =>
+          Future(hand(ev)).onFailure({ case NonFatal(e) => e.printStackTrace })
+        }
       }
       req.respond(Ok)
   }
