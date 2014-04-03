@@ -1,7 +1,7 @@
 package afterparty
 
 import unfiltered.netty
-import unfiltered.request.{ Body, Params, StringHeader, & }
+import unfiltered.request.{ Params, StringHeader, & }
 import unfiltered.response.Ok
 import org.jboss.netty.channel.ChannelHandlerContext
 import org.json4s.native.JsonMethods.parse
