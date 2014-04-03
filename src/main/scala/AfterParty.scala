@@ -5,6 +5,8 @@ import unfiltered.request.{ Params, StringHeader, & }
 import unfiltered.response.Ok
 import org.jboss.netty.channel.ChannelHandlerContext
 import org.json4s.native.JsonMethods.parse
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object XGithubEvent extends StringHeader("X-Github-Event")
 object Payload extends Params.Extract("payload", Params.first)
@@ -35,7 +37,7 @@ case class AfterParty private[afterparty](
     case req @ XGithubEvent(event) & Params(Payload(payload)) =>
       for {
         ev <- Event.of(event, parse(payload))
-      } handlers.foreach(_.lift(ev))
+      } handlers.foreach { hand => Future(hand.lift(ev)) }
       req.respond(Ok)
   }
 

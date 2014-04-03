@@ -5,3 +5,5 @@ define: [webhook](https://help.github.com/articles/post-receive-hooks). a place 
 * a ci server
 * irc notifier
 * ...
+
+Doug Tangren (softprops) 2014
