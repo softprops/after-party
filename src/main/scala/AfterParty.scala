@@ -44,6 +44,14 @@ case class AfterParty private[afterparty](
     case e: Event.PullRequested => f(e.payload)
   })
 
+  def onPulRequestComment(f: PullRequestComment => Unit) = handle({
+    case e: Event.PullRequestCommented => f(e.payload)
+  })
+
+  def onIssueCommented(f: IssueComment => Unit) = handle({
+    case e: Event.IssueCommented => f(e.payload)
+  })
+
   def onPush(f: Push => Unit) = handle({
     case e: Event.Pushed => f(e.payload)
   })
