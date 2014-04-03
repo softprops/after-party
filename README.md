@@ -19,4 +19,15 @@ Server(port).start(AfterParty.empty.onPush { push =>
 })
 ```
 
+if writing shell scripts is your thing you can alternatively pipe these events into one of those
+
+
+```
+import afterparty._
+Server(port).start(AfterParty.empty.onPush { push =>
+  Shell.pipe(push).cmd("/bin/push")()
+})
+```
+
+
 Doug Tangren (softprops) 2014
