@@ -20,7 +20,7 @@ object AfterParty {
 }
 
 case class AfterParty private[afterparty](
-  handlers: List[AfterParty.Handler[_]] = AfterParty.Unhandled :: Nil)
+  handlers: List[AfterParty.Handler[_]] = Nil)
   extends netty.async.Plan {
 
   def handle(f: AfterParty.Handler[_]) = copy(handlers = f :: handlers)
@@ -35,9 +35,12 @@ case class AfterParty private[afterparty](
 
   def intent = {
     case req @ XGithubEvent(event) & Params(Payload(payload)) =>
-      for {
+      val hands = for {
         ev <- Event.of(event, parse(payload))
-      } handlers.foreach { hand => Future(hand.lift(ev)) }
+      } handlers.filter(_.isDefinedAt(ev)) match {
+        case Nil   => Future(AfterParty.Unhandled(ev))
+        case hands => hands.foreach { hand => Future(hand(ev)) }
+      }
       req.respond(Ok)
   }
 
