@@ -7,6 +7,7 @@ case class PullRequest(
 
 // todo: fill out other props
 case class PullReq(
+  id: Int,
   url: String,
   number: Int,
   state: String,

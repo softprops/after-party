@@ -38,7 +38,6 @@ case class Repo(
   fork: Boolean,
   size: Int,
   owner: User,
-  `private`: Boolean,
   open_issues: Int,
   has_issues: Boolean,
   has_downloads: Boolean,
