@@ -15,14 +15,18 @@ object Event {
     lazy val payload = json.extract[T]
   }
   
+  case class Pinged(json: JValue) extends Named[Ping]("ping")
+
   /** https://developer.github.com/v3/activity/events/types/#pushevent */
   case class Pushed(json: JValue) extends Named[Push]("push")
 
-  case class Pinged(json: JValue) extends Named[Ping]("ping")
+  /* https://developer.github.com/v3/activity/events/types/#pullrequestevent */
+  case class PullRequested(json: JValue) extends Named[PullRequest]("pull_request")
 
   private[this] val events: Map[String, JValue => Event[_]] =
     Map("push" -> { Pushed(_) },
-        "ping" -> { Pinged(_) })
+        "ping" -> { Pinged(_) },
+        "pull_request" -> { PullRequested(_) })
 
   def of(hook: String, json: JValue) = events.get(hook).map(_(json))
 }

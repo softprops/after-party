@@ -25,6 +25,24 @@ case class AfterParty private[afterparty](
 
   def handle(f: AfterParty.Handler[_]) = copy(handlers = f :: handlers)
 
+  object shell {
+    def onPullRequest(program: String, args: String*) = handle({
+      case e: Event.PullRequested => Shell.pipe(e)(program)(args: _*)
+    })
+
+    def onPush(program: String, args: String*) = handle({
+      case e: Event.Pushed => Shell.pipe(e)(program)(args:_*)
+    })
+
+    def onPing(program: String, args: String*) = handle({
+      case e: Event.Pinged => Shell.pipe(e)(program)(args: _*)
+    })
+  }
+
+  def onPullRequest(f: PullRequest => Unit) = handle({
+    case e: Event.PullRequested => f(e.payload)
+  })
+
   def onPush(f: Push => Unit) = handle({
     case e: Event.Pushed => f(e.payload)
   })

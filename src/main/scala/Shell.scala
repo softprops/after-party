@@ -11,19 +11,13 @@ import org.json4s.native.JsonMethods.{ compact, render }
  */
 object Shell {
   def pipe(event: Event[_])(program: String)(args: String*): Int = {
-    val proc = new ProcessBuilder((program :: event.name :: args.toList).asJava).start()
-    println("started")
-    //proc.waitFor()
-    val stdin = proc.getOutputStream()
+    val proc   = new ProcessBuilder((program :: event.name :: args.toList).asJava).start()
+    val stdin  = proc.getOutputStream()
     val writer = new BufferedWriter(new OutputStreamWriter(stdin))
-    println("writing json")
     writer.write(compact(render(event.json)))
     writer.newLine()
     writer.flush()
     writer.close()
-    println("closing shop")
-    val exit = proc.waitFor()
-    println(s"exitted with $exit")
-    exit
+    proc.waitFor()
   }
 }
