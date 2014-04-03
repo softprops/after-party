@@ -9,7 +9,9 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.control.NonFatal
 
+object XGithubDelivery extends StringHeader("X-GitHub-Delivery")
 object XGithubEvent extends StringHeader("X-Github-Event")
+object XGithubSignature extends StringHeader("X-GitHub-Signature")
 object Payload extends Params.Extract("payload", Params.first)
 
 object AfterParty {
