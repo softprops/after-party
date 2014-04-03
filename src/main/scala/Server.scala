@@ -1,7 +1,8 @@
 package afterparty
 
 import unfiltered.netty
-import unfiltered.request.Path
+import unfiltered.request.{ Path, Params }
+import unfiltered.response.Pass
 
 object Server {
   def main(args: Array[String]) {
@@ -22,6 +23,9 @@ object Server {
 case class Server(port: Int, path: String = "/") {
   def start(after: AfterParty) =
     netty.Http(port).handler(netty.async.Planify {
-      case req @ Path(path) => after.intent(req)
+      case req @ Path(path) => after.intent.lift(req).getOrElse {
+        println(s"passing on path $path with params ${Params.unapply(req)}")
+        req.respond(Pass)
+      }
     }).run()
 }
