@@ -1,6 +1,6 @@
 package afterparty
 
-object PullRequestComment(comment: PRComment)
+case class PullRequestComment(comment: PRComment)
 
 case class PRComment(
   url: String,
