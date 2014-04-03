@@ -69,7 +69,10 @@ case class AfterParty private[afterparty](
       } handlers.filter(_.isDefinedAt(ev)) match {
         case Nil   => Future(AfterParty.Unhandled(ev))
         case hands => hands.foreach { hand =>
-          Future(hand(ev)).onFailure({ case NonFatal(e) => e.printStackTrace })
+          Future(hand(ev)).onFailure({ case NonFatal(e) =>
+            println(s"$event handler failed with payload $payload")
+            e.printStackTrace
+          })
         }
       }
       req.respond(Ok)
