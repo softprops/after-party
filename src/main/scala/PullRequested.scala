@@ -12,6 +12,7 @@ case class PullRequest(
 case class PullReq(
   id: Int,
   url: String,
+  html_url: String,
   number: Int,
   state: String,
   title: String,
