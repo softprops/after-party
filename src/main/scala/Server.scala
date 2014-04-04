@@ -1,7 +1,7 @@
 package afterparty
 
 import unfiltered.netty
-import unfiltered.request.{ Body, Path, Params }
+import unfiltered.request.Path
 import unfiltered.response.{ Ok, Pass }
 
 object Server {
