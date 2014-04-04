@@ -2,6 +2,7 @@ package afterparty
 
 import dispatch._, dispatch.Defaults._
 import hipshot._
+
 object Hipchat {
   private[this] lazy val props = {
     val file = getClass.getResourceAsStream("/afterparty.properties")
