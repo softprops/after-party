@@ -3,7 +3,10 @@ package afterparty
 case class PullRequest(
   action: String,
   number: Int,
-  pull_request: PullReq)
+  pull_request: PullReq,
+  repository: Repo,
+  sender: User
+)
 
 // todo: fill out other props
 case class PullReq(
@@ -16,9 +19,20 @@ case class PullReq(
   created_at: String,
   closed_at: String,
   merged_at: String,
-  repo: Repo,
   user: User,
   merged_by: User,
   merged: Boolean,
-  mergeable: Boolean)
+  mergeable: Boolean,
+  head: Ref,
+  base: Ref
+)
+
+
+case class Ref(
+  label: String,
+  ref: String,
+  sha: String,
+  user: User,
+  repo: Repo
+)
 
