@@ -52,6 +52,6 @@ case class Server(port: Int, path: String = "/") {
 	println(s"afterparty hit with $path")
 	after.intent.lift(req).getOrElse {
           req.respond(Pass)
-	}
+      	}
     }).run()
 }
