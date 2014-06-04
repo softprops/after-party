@@ -1,6 +1,8 @@
 package afterparty
 
-case class User(login: Option[String], name: Option[String], email: Option[String], username: Option[String])
+case class User(login: Option[String], name: Option[String], email: Option[String], username: Option[String]) {
+  val identifier = login.orElse(name).getOrElse("nobody")
+}
 
 case class Commit(
   id: String,
@@ -14,6 +16,7 @@ case class Commit(
   removed: List[String],
   modified: List[String])
 
+/** https://developer.github.com/v3/activity/events/types/#pushevent */
 case class Push(
   ref: String,
   after: String,
