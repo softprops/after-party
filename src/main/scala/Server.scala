@@ -37,8 +37,10 @@ object Server {
 }
 
 case class Server(port: Int, path: String = "/") {
+  // i've it org.jboss.netty.handler.codec.frame.TooLongFrameException: HTTP content length exceeded 1048576 bytes. with the default chunk size
+  // so we're generously increasing it below
   def start(after: AfterParty) =
-    netty.Http(port).chunked().handler(netty.async.Planify {
+    netty.Http(port).chunked(1048576 * 2).handler(netty.async.Planify {
       case req @ Path(path) => after.intent.lift(req).getOrElse {
         req.respond(Pass)
       }
