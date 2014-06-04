@@ -64,17 +64,22 @@ case class AfterParty private[afterparty](
 
   def intent = {
     case req @ XGithubEvent(event) & Params(Payload(payload)) =>
+      println(s"[after party] hit with $event")
       val hands = for {
         ev <- Event.of(event, parse(payload))
       } handlers.filter(_.isDefinedAt(ev)) match {
-        case Nil   => Future(AfterParty.Unhandled(ev))
+        case Nil   =>
+	  Future(AfterParty.Unhandled(ev))
         case hands => hands.foreach { hand =>
           Future(hand(ev)).onFailure({ case NonFatal(e) =>
-            println(s"$event handler failed with payload $payload")
+            println(s"[after party] $event handler for event $event failed with payload $payload")
             e.printStackTrace
           })
         }
       }
+      req.respond(Ok)
+    case req =>
+      println("[after party] request didn't have x github event or payload param")
       req.respond(Ok)
   }
 
