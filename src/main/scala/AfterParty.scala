@@ -8,6 +8,7 @@ import org.json4s.native.JsonMethods.parse
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.control.NonFatal
+import java.util.Date
 
 object XGithubDelivery extends StringHeader("X-GitHub-Delivery")
 object XGithubEvent extends StringHeader("X-Github-Event")
@@ -62,9 +63,11 @@ case class AfterParty private[afterparty](
     case e: Event.Pinged => f(e.payload)
   })
 
+  private def prefix = s"[after party ${new Date}]"
+
   def intent = {
     case req @ XGithubEvent(event) & Params(Payload(payload)) =>
-      println(s"[after party] hit with $event")
+      println(s"$prefix hit with $event")
       val hands = for {
         ev <- Event.of(event, parse(payload))
       } handlers.filter(_.isDefinedAt(ev)) match {
@@ -72,14 +75,17 @@ case class AfterParty private[afterparty](
 	  Future(AfterParty.Unhandled(ev))
         case hands => hands.foreach { hand =>
           Future(hand(ev)).onFailure({ case NonFatal(e) =>
-            println(s"[after party] $event handler for event $event failed with payload $payload")
+            println(s"$prefix $event handler for event $event failed ${e.getMessage} with payload $payload")
+	    println(s"$prefix error ==")
             e.printStackTrace
           })
         }
       }
       req.respond(Ok)
     case req =>
-      println("[after party] request didn't have x github event or payload param")
+      val now = new Date()
+      val prefix = s"[after party $now]"
+      println(s"$prefix request didn't have x github event or payload param")
       req.respond(Ok)
   }
 
