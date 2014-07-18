@@ -47,4 +47,4 @@ case class Repo(
   language: String,
   created_at: String,
   pushed_at: String,
-  master_branch: String)
+  default_branch: String)
