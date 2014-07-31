@@ -29,6 +29,4 @@ Server(port).start(AfterParty.empty.onPush { push =>
 })
 ```
 
-
-
 Doug Tangren (softprops) 2014
