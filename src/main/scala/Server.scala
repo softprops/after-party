@@ -11,20 +11,39 @@ object Server {
     import dispatch._, Defaults._
     import org.json4s.JsonDSL._
     import org.json4s.native.JsonMethods.{ compact, render }
-    val response = Http(url(apihost).POST / "api" / "v3" / "repos" / owner / repo / "hooks"
-         <:< Map("authorization" -> s"bearer $token", "content-type" -> "application/json")
-         << compact(render((("name" -> name) ~
-                            ("active" -> true) ~
-                            ("events" -> List("pull_request", "push", "issue_comment", "pull_request_review_comment", "deployment_status", "deployment", "issues", "member")) ~
-                            ("config" ->
-                             ("url" -> hookurl) ~
-                             ("content_type" -> "form")))))).apply()
+    val response = Http(
+      url(apihost).POST / "api" / "v3" / "repos" / owner / repo / "hooks"
+         <:< Map(
+           "authorization" -> s"bearer $token",
+           "Content-Type" -> "application/json",
+           "User-Agent" -> s"Afterparty/${BuildInfo.version}"
+         )
+         << compact(
+           render(
+             ("name" -> name) ~
+             ("active" -> true) ~
+             ("events" ->
+              List(
+                "pull_request", "push", "issue_comment", "pull_request_review_comment", "deployment_status", "deployment", "issues", "member"
+              )
+             ) ~
+             ("config" ->
+              ("url" -> hookurl) ~
+              ("content_type" -> "form")
+             )
+           )
+         )
+      ).apply()
     (response.getStatusCode, response.getResponseBody)
   }
 
   def hooks(token: String, owner: String, repo: String, apihost: String = "api.github.com") = {
     import dispatch._, Defaults._
-    val response = Http((url(apihost) <:< Map("authorization" -> s"bearer $token", "content-type" -> "application/json")) / "api" / "v3" / "repos" / owner / repo / "hooks").apply()
+    val response = Http((url(apihost) <:< Map(
+      "authorization" -> s"bearer $token",
+      "content-type" -> "application/json",
+      "User-Agent" -> s"Afterparty/${BuildInfo.version}"
+    )) / "api" / "v3" / "repos" / owner / repo / "hooks").apply()
     (response.getStatusCode, response.getResponseBody)
   }
 
