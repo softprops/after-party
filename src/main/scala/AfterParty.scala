@@ -16,18 +16,18 @@ object XGithubSignature extends StringHeader("X-GitHub-Signature")
 object Payload extends Params.Extract("payload", Params.first)
 
 object AfterParty {
-  type Handler[_] = PartialFunction[Event[_], Unit]
-  val Unhandled: AfterParty.Handler[_] = {
+  type Handler = PartialFunction[Event[_], Unit]
+  val Unhandled: AfterParty.Handler = {
     case event => println(s"unhandled ${event.name} event")
   }
   val empty = AfterParty()
 }
 
 case class AfterParty private[afterparty](
-  handlers: List[AfterParty.Handler[_]] = Nil)
-  extends netty.async.Plan {
+  handlers: List[AfterParty.Handler] = Nil
+) extends netty.async.Plan {
 
-  def handle(f: AfterParty.Handler[_]) = copy(handlers = f :: handlers)
+  def handle(f: AfterParty.Handler) = copy(handlers = f :: handlers)
 
   object shell {
     def onPullRequest(program: String, args: String*) = handle({
@@ -72,11 +72,11 @@ case class AfterParty private[afterparty](
         ev <- Event.of(event, parse(payload))
       } handlers.filter(_.isDefinedAt(ev)) match {
         case Nil   =>
-	  Future(AfterParty.Unhandled(ev))
+	        Future(AfterParty.Unhandled(ev))
         case hands => hands.foreach { hand =>
           Future(hand(ev)).onFailure({ case NonFatal(e) =>
             println(s"$prefix $event handler for event $event failed ${e.getMessage} with payload $payload")
-	    println(s"$prefix error ==")
+	          println(s"$prefix error ==")
             e.printStackTrace
           })
         }
