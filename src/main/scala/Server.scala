@@ -79,7 +79,7 @@ case class Server(
   // i've it org.jboss.netty.handler.codec.frame.TooLongFrameException: HTTP content length exceeded 1048576 bytes. with the default chunk size
   // so we're generously increasing it below
   def chunkSize: Int =
-    Option(sys.env("AFTER_PARTY_SERVER_CHUNK_SIZE")).map(_.toInt)
+    sys.env.get("AFTER_PARTY_SERVER_CHUNK_SIZE").map(_.toInt)
       .getOrElse(1048576 * 4)
 
   def start(after: AfterParty) =
