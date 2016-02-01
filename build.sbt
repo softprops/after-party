@@ -5,7 +5,7 @@ organization := "me.lessis"
 
 name := "after-party"
 
-version := "0.1.0-SNAPSHOT"
+version := "0.1.0"
 
 crossScalaVersions := Seq("2.11.7")
 
