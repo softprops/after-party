@@ -14,7 +14,8 @@ case class Commit(
   distinct: Boolean,
   added: List[String],
   removed: List[String],
-  modified: List[String])
+  modified: List[String]
+)
 
 /** https://developer.github.com/v3/activity/events/types/#pushevent */
 case class Push(
@@ -28,7 +29,8 @@ case class Push(
   commits: List[Commit],
   head_commit: Commit,
   repository: Repo,
-  pusher: User)
+  pusher: User
+)
 
 case class Repo(
   id: Int,
@@ -47,4 +49,5 @@ case class Repo(
   language: String,
   created_at: String,
   pushed_at: String,
-  default_branch: String)
+  default_branch: String
+)

@@ -1,7 +1,7 @@
 package afterparty
 
 import unfiltered.netty
-import unfiltered.request.{ Params, StringHeader, & }
+import unfiltered.request.{Params, StringHeader, &}
 import unfiltered.response.Ok
 import org.jboss.netty.channel.ChannelHandlerContext
 import org.json4s.native.JsonMethods.parse
@@ -23,8 +23,8 @@ object AfterParty {
   val empty = AfterParty()
 }
 
-case class AfterParty private[afterparty](
-  handlers: List[AfterParty.Handler] = Nil
+case class AfterParty private[afterparty] (
+    handlers: List[AfterParty.Handler] = Nil
 ) extends netty.async.Plan {
 
   def handle(f: AfterParty.Handler) = copy(handlers = f :: handlers)
@@ -35,7 +35,7 @@ case class AfterParty private[afterparty](
     })
 
     def onPush(program: String, args: String*) = handle({
-      case e: Event.Pushed => Shell.pipe(e)(program)(args:_*)
+      case e: Event.Pushed => Shell.pipe(e)(program)(args: _*)
     })
 
     def onPing(program: String, args: String*) = handle({
@@ -71,13 +71,14 @@ case class AfterParty private[afterparty](
       val hands = for {
         ev <- Event.of(event, parse(payload))
       } handlers.filter(_.isDefinedAt(ev)) match {
-        case Nil   =>
-	        Future(AfterParty.Unhandled(ev))
+        case Nil =>
+          Future(AfterParty.Unhandled(ev))
         case hands => hands.foreach { hand =>
-          Future(hand(ev)).onFailure({ case NonFatal(e) =>
-            println(s"$prefix $event handler for event $event failed ${e.getMessage} with payload $payload")
-	          println(s"$prefix error ==")
-            e.printStackTrace
+          Future(hand(ev)).onFailure({
+            case NonFatal(e) =>
+              println(s"$prefix $event handler for event $event failed ${e.getMessage} with payload $payload")
+              println(s"$prefix error ==")
+              e.printStackTrace
           })
         }
       }
