@@ -35,6 +35,7 @@ case class Push(
 case class Repo(
   id: Int,
   name: String,
+  full_name: String,
   url: String,
   description: String,
   watchers: Int,
