@@ -6,8 +6,18 @@ define: [webhook](https://help.github.com/articles/post-receive-hooks). a place 
 * irc notifier
 * ...
 
+## install
 
-# usage
+This library is currently only published for scala 2.11. Reach out with with a github issue if you would like a version published
+for older versions of scala.
+
+Add the following to your build definition
+
+```scala
+libraryDependencies += "me.lessis" %% "after-party" % "0.1.0"
+```
+
+## usage
 
 create a server. start a party
 
